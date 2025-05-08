@@ -1,0 +1,452 @@
+<!-- <mvc:View controllerName="pendinginst.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content />
+    </Page>
+</mvc:View> -->
+
+<mvc:View class="sapUiSizeCompact" controllerName="pendinginst.controller.View1"
+	xmlns="sap.ui.table" xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified" xmlns:f="sap.ui.layout.form"
+	xmlns:c="sap.ui.core" xmlns:m="sap.m" height="100%" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"  xmlns:ux="sap.uxap">
+	
+	<m:Page width="100%"  showHeader="false"
+		class="sapUiBody sapUiContentPadding"  id="viewReporting">
+		<m:content>
+		
+			<m:Toolbar id="toolbar1" class="sapUiTinyMarginTop ">
+			
+			<m:Label id="CustNum" text="Install Dealer #:" labelFor="idCustNumInp"/>
+				<m:Input id="idCustNumInp" required="true" value="{oGlobalModel>/CustNum}" 
+				class="zsapMText sapUiSmallMarginEnd" width="100px"
+				submit="getPending"/>				
+				<!--
+			<m:Button type="Accept" text="Submit" press="getPending" ariaDescribedBy="acceptButtonDescription genericButtonDescription"
+				class="zsapMBtnDefault sapUiSmallMarginEnd" ></m:Button> -->
+					
+				<m:Button  text="Submit" press="getPending" 
+				ariaDescribedBy="acceptButtonDescription genericButtonDescription"
+				class="sapUiSmallMarginEnd" ></m:Button>
+		</m:Toolbar>			
+
+			<l:VerticalLayout visible="{oGlobalModel>/formVis}">	
+			<!-- <m:FormattedText htmlText="&lt;p style='font-size:small; font-weight: 600; color:red'&gt;Dealer Information&lt;/p&gt;"/>	  -->
+			<m:FormattedText htmlText=""/>	  
+			<!--<m:ObjectStatus text="{oGlobalModel>/DealerInfo}" state="Success" class="sapUiLargeMarginEnd"/> -->
+			<m:Text text="" />
+			<m:Text id="idCustAddress"  text="{oGlobalModel>/DealerInfo}" />
+			</l:VerticalLayout>
+
+			<!--	class="sapUiResponsiveContentPadding"  -->
+		 <m:IconTabBar
+			id="idIconTabBarInlineMode"
+			headerMode="Inline"
+			expanded="{device>/isNoPhone}"		
+			visible="{oGlobalModel>/formVis}">
+		<m:items>
+			<m:IconTabFilter
+				text="List of Pending Install Reports"
+				key="pending"
+				count="{oGlobalModel>/SizePending}">
+				<!-- class="sapUiSmallMarginBegin" 
+					visibleRowCountMode="Auto"  -->
+				<Table id="tabPending"  rows="{ path: 'oDetModel>/',
+									events: { change: '.onChangePending' }
+									}" 
+					visibleRowCount="{oGlobalModel>/SizePending}"
+					width="100%"  					
+					selectionMode="None" rowActionCount="1" 
+					fixedBottomRowCount="{oGlobalModel>/fixedBottom}">
+					<extension>
+					<m:OverflowToolbar style="Clear" height="3rem">
+					
+						<m:Button	
+							visible="false"					
+							icon="sap-icon://sorting-ranking"
+							text="Export to PDF"
+							press="onDataExport"/>
+
+							 <m:ToolbarSpacer />
+							<m:SearchField
+							placeholder="Filter"
+							value="{oGlobalModel>/globalFilter}"
+							search="onFilter"
+							width="10rem"
+							id="filter1"/>
+						<m:Image
+						  	id="oDetModel"
+                            press="onDataExport"
+                            src="/sap/bc/ui5_ui5/sap/zsharpcss/icons/icon_export_excel.png"
+                            tooltip="Export to Excel"
+                        />			
+						  <m:Image
+						  		id="idPendingPDF"
+								press="onExportToPDF"
+                                src="/sap/bc/ui5_ui5/sap/zsharpcss/icons/icon_export_pdf.png"
+                                tooltip="Export Report to PDF"
+                            />
+
+						<!--
+						<m:Button							
+							icon="sap-icon://decline"
+							tooltip="Reset Table"
+							press="resetTable"
+							id="reset1"/>
+							-->
+					</m:OverflowToolbar>
+				</extension>
+				
+				<columns>	
+					<!-- TAB 1111 -  Sold to -->			
+					<Column id="order"  sortProperty="Salesord" 
+						autoResizable="true" width="85px">
+						<multiLabels >
+							<m:Label visible="false" />
+                    		<m:Label text="Order # " textAlign="Center" width="100%"/>
+                		</multiLabels>
+						<template>
+							<m:Text 							
+							 	text="{ path:'oDetModel>Salesord',
+									formatter: '.removeLeading'}"									
+								wrapping="false" 
+								class="zsapMGridText" />
+						</template>
+					</Column>			
+					
+					<Column id="SoldTo" sortProperty="SoldTo"
+					 autoResizable="true" headerSpan="4" width="85px" >
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="Sold To#" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{ path:'oDetModel>SoldTo',
+										formatter: '.removeLeading'}"	
+							wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Name1Ag" sortProperty="Name1Ag" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="Name" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>Name1Ag}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Ort01Ag" sortProperty="Ort01Ag" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="City" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>Ort01Ag}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="RegioAg" sortProperty="RegioAg" autoResizable="true"
+					width="50px" >
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="State" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>RegioAg}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+									
+					
+					<!-- Ship to -->
+									
+					<Column id="ShipTo"  sortProperty="ShipTo" width="85px"
+						autoResizable="true" headerSpan="5" colspan="5">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="Ship To #" textAlign="Center" width="100%"/>
+                	</multiLabels>
+						<template>
+							<m:Text text="{ path:'oDetModel>ShipTo',
+										formatter: '.removeLeading'}"							
+							
+							wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+
+					
+					<Column id="Name1We" sortProperty="Name1We" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="Name" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>Name1We}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="StrasWe" sortProperty="StrasWe" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="Street" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>StrasWe}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Ort01We" sortProperty="Ort01We" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="City" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>Ort01We}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="RegioWe" sortProperty="RegioWe"
+						width="50px" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="State" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oDetModel>RegioWe}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>	
+					
+					<Column id="DocNumber" sortProperty="DocNumber"
+					width="85px"  autoResizable="true">
+					<multiLabels >
+							<m:Label visible="false" />
+                  		  <m:Label text="Delivery #" textAlign="Center" width="100%"/>
+					</multiLabels>
+						<template>
+							<m:Text text="{ path:'oDetModel>DocNumber',
+										formatter: '.removeLeading'}"  						
+							
+							wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>	
+				
+				<Column id="View" autoResizable="true" width="50px">
+					<multiLabels >
+					<m:Label visible="false" />	
+                    <m:Label text="View" textAlign="Center" width="100%"/>
+					</multiLabels>
+						<template>
+<!--  href="/sap/opu/odata/sap/ZSD_PENDINGINSTALL_SRV/pdfSet(salesDoc='{oDetModel>DocNumber}')/$value"/>  -->
+					<m:Link text="NOI" target="_blank" 
+					href="/sap/opu/odata/sap/ZSD_PENDINGINSTALL_SRV/pdfSet(salesDoc='{oDetModel>DocNumber}')/$value"/>
+						</template>
+					</Column>	
+					</columns>
+
+			</Table>
+			<!--
+			<m:Text text="These install reports are for your information only; you are not required to submit them to Sharp" />
+			<m:Text text="Install reports shown in this section will be removed after 60 days" />
+			-->
+			<!--<m:FormattedText htmlText="{htmltags>HTML}"/>  -->
+			<m:FormattedText htmlText="{htmltags>/HTML}"/>
+			</m:IconTabFilter>			
+			
+			
+			<m:IconTabFilter
+				text="Informational Install Reports"
+				key="info"
+				count="{oGlobalModel>/SizeInfo}">
+				<!-- class="sapUiSmallMarginBegin"
+				visibleRowCountMode="Auto"  -->
+				<Table id="tabInfo"  rows="{ path: 'oInfoModel>/',
+											events: { change: '.onChangeInform'  }
+							}" 
+					visibleRowCount="{oGlobalModel>/SizeInfo}"
+					width="100%"  				
+					selectionMode="None" rowActionCount="1"
+					fixedBottomRowCount="{oGlobalModel>/fixedBottom}">
+					<extension>
+					<m:OverflowToolbar style="Clear" height="3rem">
+					
+						<m:Button	
+							visible="false"					
+							icon="sap-icon://sorting-ranking"
+							text="Export to PDF"
+							press="onDataExport"/>
+							 <m:ToolbarSpacer />
+								<m:SearchField
+							placeholder="Filter"
+							value="{oGlobalModel>/globalFilter}"
+							search="onFilter"
+							width="10rem"
+							id="filter2"/>
+							<!--
+						<m:Button
+							id="oInfoModel"
+							icon="sap-icon://download"
+							text="Export to Excel"
+							press="onDataExport"/>
+							-->
+						 <m:Image
+						 	id="oInfoModel"
+                            press="onDataExport"
+                            src="/sap/bc/ui5_ui5/sap/zsharpcss/icons/icon_export_excel.png"
+                            tooltip="Export to Excel"
+                        />
+						<m:Image	
+								id="idInfoPDF"					  		
+                                press="onExportToPDF"
+                                src="/sap/bc/ui5_ui5/sap/zsharpcss/icons/icon_export_pdf.png"
+                                tooltip="Export Report to PDF"
+                            />
+						<!--
+						<m:Button icon="sap-icon://decline"  tooltip="Reset Table"
+							      press="resetTable"   id="reset2"/>  -->
+					</m:OverflowToolbar>
+				</extension>
+				
+				<columns>
+							<!-- Sold to Tab 222-->			
+					<Column id="order1"  sortProperty="Salesord"
+						autoResizable="true" width="85px">
+					<multiLabels >
+							<m:Label visible="false" />	
+                    	<m:Label text="Order #" textAlign="Center" width="100%"/>
+					</multiLabels>
+						<template>
+							<m:Text text="{ path:'oInfoModel>Salesord',
+									formatter: '.removeLeading'}"							
+							wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>			
+					
+					<Column id="SoldTo1" sortProperty="SoldTo" width="85px"
+					  autoResizable="true" headerSpan="4" >
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="Sold To#" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{ path:'oInfoModel>SoldTo',
+										formatter: '.removeLeading'}"					
+							
+							wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Name1Ag1" sortProperty="Name1Ag" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="Name" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>Name1Ag}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Ort01Ag1" sortProperty="Ort01Ag" autoResizable="true" width="120px">
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="City" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>Ort01Ag}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="RegioAg1" sortProperty="RegioAg" autoResizable="true" width="50px">
+						<multiLabels >
+                    <m:Label text="Sold To" textAlign="Center" width="100%" />
+                    <m:Label text="State" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>RegioAg}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<!-- Ship to Tab 22-->
+									
+					<Column id="ShipTo1"  sortProperty="ShipTo" width="85px"
+						autoResizable="true" headerSpan="5" colspan="5">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="Ship To #" textAlign="Center" width="100%"/>
+                	</multiLabels>
+						<template>
+							<m:Text text="{ path:'oInfoModel>ShipTo',
+										formatter: '.removeLeading'}"
+							wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Name1We1" sortProperty="Name1We" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="Name" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>Name1We}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="StrasWe1" sortProperty="StrasWe" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="Street" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>StrasWe}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="Ort01We1" sortProperty="Ort01We" autoResizable="true">
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="City" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>Ort01We}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>
+					
+					<Column id="RegioWe1" sortProperty="RegioWe" autoResizable="true" width="50px"> 
+						<multiLabels >
+                    <m:Label text="Ship To" textAlign="Center" width="100%" />
+                    <m:Label text="State" textAlign="Center" width="100%"/>
+                </multiLabels>
+						<template>
+							<m:Text text="{oInfoModel>RegioWe}" wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>	
+					
+					<Column id="DocNumber1" sortProperty="DocNumber" autoResizable="true" width="85px">
+					<multiLabels >
+							<m:Label visible="false" />
+                    <m:Label text="Delivery #" textAlign="Center" width="100%"/>
+					</multiLabels>
+						<template>
+							<m:Text text="{ path:'oInfoModel>DocNumber',
+										formatter: '.removeLeading'}"  								
+										wrapping="false" class="zsapMGridText" />
+						</template>
+					</Column>	
+				
+				<Column id="View1" autoResizable="true" width="50px">
+					<multiLabels >
+						<m:Label visible="false" />	
+                 	   <m:Label text="View" textAlign="Center" width="100%"/>
+					</multiLabels>
+						<template>
+						<m:Link text="NOI" target="_blank"
+						href="/sap/opu/odata/sap/ZSD_PENDINGINSTALL_SRV/pdfSet(salesDoc='{oInfoModel>DocNumber}')/$value"/>
+						</template>
+					</Column>	
+					</columns>
+			</Table>
+			</m:IconTabFilter>			
+		</m:items>
+		</m:IconTabBar>	
+		</m:content>
+	</m:Page>
+</mvc:View>
